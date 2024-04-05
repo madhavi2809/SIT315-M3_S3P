@@ -1,5 +1,6 @@
 #include <stdio.h> // Standard input-output header
 #include <stdlib.h> // Standard library header
+#define CL_TARGET_OPENCL_VERSION 120
 #include <CL/cl.h> // OpenCL header
 #include <chrono> // Header for timing utilities
 
@@ -160,33 +161,35 @@ void setup_kernel_memory()
 // Function definition for setting up OpenCL device, context, command queue, and kernel
 void setup_openCL_device_context_queue_kernel(char *filename, char *kernelname)
 {
-    device_id = create_device(); // Create OpenCL device
+    device_id = create_device();
     cl_int err;
 
-    context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &err); // Create OpenCL context
+    context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &err);
     if (err < 0)
     {
         perror("Couldn't create a context");
         exit(1);
     }
 
-    program = build_program(context, device_id, filename); // Build OpenCL program
+    program = build_program(context, device_id, filename);
 
-    queue = clCreateCommandQueueWithProperties(context, device_id, 0, &err); // Create command queue
+    // Create command queue using clCreateCommandQueue
+    queue = clCreateCommandQueue(context, device_id, 0, &err);
     if (err < 0)
     {
         perror("Couldn't create a command queue");
         exit(1);
-    };
+    }
 
-    kernel = clCreateKernel(program, kernelname, &err); // Create kernel
+    kernel = clCreateKernel(program, kernelname, &err);
     if (err < 0)
     {
         perror("Couldn't create a kernel");
         printf("error =%d", err);
         exit(1);
-    };
+    }
 }
+
 
 // Function definition for building an OpenCL program
 cl_program build_program(cl_context ctx, cl_device_id dev, const char *filename)
