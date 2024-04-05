@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define CL_TARGET_OPENCL_VERSION 120
 #include <CL/cl.h>
 #include <chrono>
 
@@ -166,7 +167,7 @@ void setup_openCL_device_context_queue_kernel(char *filename, char *kernelname)
 
     program = build_program(context, device_id, filename);
 
-    queue = clCreateCommandQueueWithProperties(context, device_id, 0, &err);
+    queue = clCreateCommandQueue(context, device_id, 0, &err);
     if (err < 0)
     {
         perror("Couldn't create a command queue");
